@@ -3,6 +3,19 @@ import pandas as pd
 from docx import Document
 import os
 
+PASSWORD = st.secrets["general"]["password"]
+# Solicitar contraseña al inicio
+st.title("Dame algo para continuar")
+password = st.text_input("Introduce lo que tu sabes para continuar:", type="password")
+
+if password == "":
+    st.info("Esperando...")
+    st.stop()
+
+if password != PASSWORD:  # Cambia 'tu_contraseña' por la contraseña deseada
+    st.error("No es correcto. No puedes continuar.")
+    st.stop()
+
 def process_word_to_excel(word_file, output_excel_path):
     doc = Document(word_file)
     data = []
@@ -51,11 +64,12 @@ def process_word_to_excel(word_file, output_excel_path):
         return None
 
 # Streamlit UI
-st.title("Procesa Test en Word")
-uploaded_file = st.file_uploader("Sube tu archivo Word (.docx)", type="docx")
+st.title("Procesa Archivo")
+uploaded_file = st.file_uploader("Sube tu archivo", type="docx")
 
 if uploaded_file:
-    excel_name = "output.xlsx"
+    
+    excel_name = uploaded_file.name.replace(".docx", ".xlsx")
     with open(uploaded_file.name, "wb") as f:
         f.write(uploaded_file.getbuffer())
 
